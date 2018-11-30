@@ -11,10 +11,10 @@ class mahasiswa_kelas extends Model
     protected $primaryKey = 'id_mhs_kelas';
 
     public function kelas(){
-      return $this->belongsTo('App\kelas', 'id_kelas');
+      return $this->belongsTo('App\kelas', 'kelas_id');
     }
 
     public function mahasiswa(){
-      return $this->belongsTo('App\mahasiswa', 'id_mahasiswa');
+      return $this->belongsTo('App\mahasiswa', 'mahasiswa_id');
     }
 }

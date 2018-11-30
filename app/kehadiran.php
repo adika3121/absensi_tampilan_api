@@ -15,6 +15,6 @@ class kehadiran extends Model
     }
 
     public function mahasiswa(){
-      return $this->belongsTo('App\mahasiswa', 'id_mahasiswa');
+      return $this->belongsTo('App\mahasiswa', 'mahasiswa_id');
     }
 }

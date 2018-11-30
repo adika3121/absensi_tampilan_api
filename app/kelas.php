@@ -15,7 +15,7 @@ class kelas extends Model
     }
 
     public function mahasiswa_kelas(){
-      return $this->hasMany('App\mahasiswa_kelas');
+      return $this->hasMany('App\mahasiswa_kelas', 'kelas_id');
     }
 
     public function jadwal(){
