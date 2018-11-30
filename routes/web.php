@@ -20,3 +20,6 @@ Route::get('/absensi', function () {
 });
 // web
 Route::resource('/jadwal', 'JadwalController');
+
+
+Route::get('/login', 'DashboardController@login');
