@@ -114,9 +114,11 @@ class KehadiranController extends Controller
      * @param  \App\kehadiran  $kehadiran
      * @return \Illuminate\Http\Response
      */
-    public function show(kehadiran $kehadiran)
+    public function show($id)
     {
-        //
+        return kehadiran::with("mahasiswa")
+            ->orderBy("created_at", "desc")
+            ->get();
     }
 
     /**
