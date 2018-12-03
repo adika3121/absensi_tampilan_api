@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('menu_utama');
+    return view('auth.login');
 });
 
 Route::get('/absensi', function () {
@@ -22,4 +22,8 @@ Route::get('/absensi', function () {
 Route::resource('/jadwal', 'JadwalController');
 
 
-Route::get('/login', 'DashboardController@login');
+Route::post('/login', 'DosenController@login');
+
+// Auth::routes();
+//
+// Route::get('/home', 'HomeController@index')->name('home');
