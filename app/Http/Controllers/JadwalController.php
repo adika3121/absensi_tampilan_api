@@ -82,7 +82,7 @@ class JadwalController extends Controller
                                   'ruangan.nama as nama_ruangan',
                                   'mahasiswa.nama as nama_mahasiswa',
                                   'mahasiswa.nim as nim_mahasiswa',
-                                  'kehadiran.status_valid')
+                                  'kehadiran.status_valid as status')
                         ->get();
         return view('validasi_absensi_mahasiswa', compact('jadwal_dosen'));
     }

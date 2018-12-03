@@ -7,8 +7,8 @@ Route::get("/jadwal/kehadiran/{id}", "PageController@kehadiran");
 
 
 Route::get("/login/dosen", function(){
-  return view('auth.login')
-})
+  return view('auth.login');
+});
 
 Route::get('/absensi', function () {
     return view('absensi_kelas');
