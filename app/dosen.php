@@ -13,4 +13,11 @@ class dosen extends Model
     public function kelas(){
       return $this->hasMany('App\kelas');
     }
+    protected $hidden = [
+        'password'
+    ];
+
+    protected $fillable = [
+        'nama', 'rfid', 'username', 'password',
+    ];
 }

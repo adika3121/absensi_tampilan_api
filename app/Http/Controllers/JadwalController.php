@@ -71,9 +71,14 @@ class JadwalController extends Controller
      * @param  \App\jadwal  $jadwal
      * @return \Illuminate\Http\Response
      */
-    public function edit(jadwal $jadwal)
+    public function edit($id_jadwal)
     {
-        //
+        $jadwal_dosen = jadwal::where('id_jadwal', $id_jadwal)
+                        ->join('kelas', 'jadwal.kelas_id', '=', 'kelas.id_kelas')
+                        ->join('ruangan', 'jadwal.ruangan_id', '=', 'ruangan.id_ruangan')
+                        ->join('kehadiran', 'jadwal.id_jadwal', '=', 'kehadiran.jadwal_id')
+                        ->join('mahasiswa', 'kehadiran.mahasiswa_id', '=', 'mahasiswa.id_mhs')
+                        ->select('')
     }
 
     /**

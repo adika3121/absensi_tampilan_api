@@ -1,12 +1,17 @@
 @extends('dashboard.app')
 
+@section('title')
+  Login DOSEN
+@endsection
+
+
 @section('content')
 
 <section id="wrapper">
     <div class="login-register" style="background-color: #CDDCDC;background-image: radial-gradient(at 50% 100%, rgba(255,255,255,0.50) 0%, rgba(0,0,0,0.50) 100%), linear-gradient(to bottom,rgba(255,255,255,0.25) 0%, rgba(0,0,0,0.25) 100%); background-blend-mode: screen, overlay;">
         <div class="login-box card">
             <div class="card-body">
-                <form class="form-horizontal" method="POST" id="loginform" action="/login">
+                <form class="form-horizontal" method="POST" id="loginform" action="{{action('DosenController@login')}}">
                     @csrf
                     <h1 class="text-center m-b-20">LOGIN DOSEN</h1>
                     <div class="form-group m-b-15">
