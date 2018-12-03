@@ -19,12 +19,12 @@ class JadwalController extends Controller
     public function index()
     {
 
-        $data_jadwal = jadwal::with('ruangan','kelas')
-                        // ->where('hari', $hari)
-                        ->get();
-        $data_kelas = kelas::with('dosen')->get();
-
-        return view('menu_utama', compact('data_jadwal','data_kelas'));
+        // $data_jadwal = jadwal::with('ruangan','kelas')
+        //                 // ->where('hari', $hari)
+        //                 ->get();
+        // $data_kelas = kelas::with('dosen')->get();
+        //
+        // return view('menu_utama', compact('data_jadwal','data_kelas'));
     }
 
     /**
@@ -78,7 +78,13 @@ class JadwalController extends Controller
                         ->join('ruangan', 'jadwal.ruangan_id', '=', 'ruangan.id_ruangan')
                         ->join('kehadiran', 'jadwal.id_jadwal', '=', 'kehadiran.jadwal_id')
                         ->join('mahasiswa', 'kehadiran.mahasiswa_id', '=', 'mahasiswa.id_mhs')
-                        ->select('')
+                        ->select('kelas.nama as nama_kelas',
+                                  'ruangan.nama as nama_ruangan',
+                                  'mahasiswa.nama as nama_mahasiswa',
+                                  'mahasiswa.nim as nim_mahasiswa',
+                                  'kehadiran.status_valid')
+                        ->get();
+        return view('validasi_absensi_mahasiswa', compact('jadwal_dosen'));
     }
 
     /**
