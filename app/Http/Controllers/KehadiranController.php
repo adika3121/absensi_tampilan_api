@@ -117,6 +117,7 @@ class KehadiranController extends Controller
     public function show($id)
     {
         return kehadiran::with("mahasiswa")
+            ->where("status_valid", 0)
             ->orderBy("created_at", "desc")
             ->get();
     }
