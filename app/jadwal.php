@@ -15,7 +15,7 @@ class jadwal extends Model
       }
 
       public function kehadiran(){
-        return $this->hasMany('App\kehadiran');
+        return $this->hasMany('App\kehadiran', 'jadwal_id');
       }
 
       public function kelas(){
