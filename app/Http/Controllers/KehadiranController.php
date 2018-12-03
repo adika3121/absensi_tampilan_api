@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Validator;
 use App\mahasiswa;
 use App\jadwal;
+use Carbon;
 
 class KehadiranController extends Controller
 {
@@ -50,7 +51,7 @@ class KehadiranController extends Controller
             return response()->json([
             	"status" => false,
             	"pesan" => $validator->errors()->first()
-            ]);            
+            ]);
         }
 
         $mahasiswa = mahasiswa::with([
@@ -117,6 +118,7 @@ class KehadiranController extends Controller
     public function show($id)
     {
         return kehadiran::with("mahasiswa")
+            ->where("created_at", Carbon::today())
             ->orderBy("created_at", "desc")
             ->get();
     }
