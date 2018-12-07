@@ -32,12 +32,13 @@
     <section id="portfolio">
         <div class="container wow fadeInUp">
           <div class="section-header">
-            <h3 class="section-title">Jadwal {{$dosen->nama}}</h3>
+            <h3 class="section-title">Jadwal Mata Kuliah</h3>
+            <p class="section-description dosen"> <span class="fa fa-user-circle-o"></span> {{$dosen->nama}}</p>
           </div>
           <div class="row" id="portfolio-wrapper">
             @if(count($dosen_jadwal))
               @foreach($dosen_jadwal as $j_dosen)
-                <div class="col-md-3 col-sm-12 mt-10">
+                <div class="col-md-3 col-sm-12 jadwal">
                   <a href="{{action('JadwalController@edit', $j_dosen->id_jadwal)}}">
                     <div class="img-jadwal"></div>
                     <div class="detail">

@@ -49,6 +49,13 @@ class OrtuController extends Controller
         ]);
     }
 
+    public function riwayatMahasiswa($id_ortu){
+      
+
+    }
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -83,7 +90,7 @@ class OrtuController extends Controller
       return response()->json([$userOrtu]);
     }
 
-    
+
 
     /**
      * Display the specified resource.
