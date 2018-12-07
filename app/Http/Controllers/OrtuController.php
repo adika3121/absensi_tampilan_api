@@ -83,6 +83,8 @@ class OrtuController extends Controller
       return response()->json([$userOrtu]);
     }
 
+    
+
     /**
      * Display the specified resource.
      *

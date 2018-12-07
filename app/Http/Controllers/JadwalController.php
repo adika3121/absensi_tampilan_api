@@ -71,6 +71,17 @@ class JadwalController extends Controller
      * @param  \App\jadwal  $jadwal
      * @return \Illuminate\Http\Response
      */
+
+     public $hari =  [
+         1 => 'Senin',
+         2 => 'Selasa',
+         3 => 'Rabu',
+         4 => 'Kamis',
+         5 => 'Jumat',
+         6 => 'Sabtu',
+         7 => 'Minggu'
+       ];
+
     public function edit($id_jadwal)
     {
         $jadwal_dosen = jadwal::where('id_jadwal', $id_jadwal)
@@ -78,13 +89,25 @@ class JadwalController extends Controller
                         ->join('ruangan', 'jadwal.ruangan_id', '=', 'ruangan.id_ruangan')
                         ->join('kehadiran', 'jadwal.id_jadwal', '=', 'kehadiran.jadwal_id')
                         ->join('mahasiswa', 'kehadiran.mahasiswa_id', '=', 'mahasiswa.id_mhs')
-                        ->select('kelas.nama as nama_kelas',
-                                  'ruangan.nama as nama_ruangan',
-                                  'mahasiswa.nama as nama_mahasiswa',
+                        ->select( 'mahasiswa.nama as nama_mahasiswa',
                                   'mahasiswa.nim as nim_mahasiswa',
-                                  'kehadiran.status_valid')
+                                  'kehadiran.created_at as waktu_absensi',
+                                  'kehadiran.status_valid as status')
                         ->get();
-        return view('validasi_absensi_mahasiswa', compact('jadwal_dosen'));
+
+          $det_jadwal = jadwal::where('id_jadwal', $id_jadwal)
+                        ->join('kelas', 'jadwal.kelas_id', '=', 'kelas.id_kelas')
+                        ->join('dosen', 'kelas.dosen_id', '=', 'dosen.id_dosen')
+                        ->join('ruangan', 'jadwal.ruangan_id', '=', 'ruangan.id_ruangan')
+                        ->select('kelas.nama as nama_kelas',
+                                  'dosen.nama as nama_dosen',
+                                  'ruangan.nama as nama_ruangan',
+                                  'jadwal.hari',
+                                  'jadwal.mulai as mulai',
+                                  'jadwal.selesai as selesai')
+                        ->first();
+
+        return view('validasi_absensi_mahasiswa', compact('jadwal_dosen', 'det_jadwal', 'hari'));
     }
 
     /**

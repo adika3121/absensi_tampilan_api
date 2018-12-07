@@ -30,7 +30,7 @@ class PageController extends Controller
         ->withCount("kehadiran")
         ->get();
 
-        return view("utama", compact("data_jadwal", "hari"));
+        return view("dashboard.utama", compact("data_jadwal", "hari"));
     }
 
     public function kehadiran($id){

@@ -21,6 +21,15 @@ class DosenController extends Controller
         //
     }
 
+    public $hari =  [
+        1 => 'Senin',
+        2 => 'Selasa',
+        3 => 'Rabu',
+        4 => 'Kamis',
+        5 => 'Jumat',
+        6 => 'Sabtu',
+        7 => 'Minggu'
+      ];
 
     public function login(Request $request){
 
@@ -30,6 +39,7 @@ class DosenController extends Controller
           ->selectRaw('id_dosen, nama, rfid, username, password, token')
           ->first();
 
+        $hari = $this->hari;
         $dosen_jadwal = dosen::where('username', $usr)
                       ->join('kelas', 'dosen.id_dosen', '=', 'kelas.dosen_id')
                       ->join('jadwal', 'kelas.id_kelas', '=', 'jadwal.kelas_id')
@@ -50,7 +60,7 @@ class DosenController extends Controller
             $dosen->token = uniqid();
             $dosen->save();
           }
-          return view('jadwal_dosen', compact('dosen', 'dosen_jadwal'));
+          return view('jadwal_dosen', compact('dosen', 'dosen_jadwal', 'hari'));
            //  return response()->json([
            //    'status'  => true,
            //    'message' => 'User terotentifikasi',
