@@ -28,19 +28,44 @@
     </div>
 </nav>
 
-
-    <div class="container-fluid">
-      <div class="row">
+  <main id="main">
+    <section id="portfolio">
+        <div class="container wow fadeInUp">
+          <div class="section-header">
+            <h3 class="section-title">Jadwal {{$dosen->nama}}</h3>
+          </div>
+          <div class="row" id="portfolio-wrapper">
+            @if(count($dosen_jadwal))
+              @foreach($dosen_jadwal as $j_dosen)
+                <div class="col-md-3 col-sm-12 mt-10">
+                  <a href="{{action('JadwalController@edit', $j_dosen->id_jadwal)}}">
+                    <div class="img-jadwal"></div>
+                    <div class="detail">
+                      <h5>{{ $j_dosen->nama_kelas }}</h5>
+                      <p class="ruangan">{{ $j_dosen->nama_ruangan }}</p>
+                      <span class="waktu">{{ $hari[$j_dosen->hari] }}, {{$j_dosen->mulai}} - {{ $j_dosen->selesai }}</span>
+                    </div>
+                  </a>
+                </div>
+              @endforeach
+            @endif
+          </div>
+        </div>
+    </section>
+  </main>
+      <!-- <div class="row">
         <div class="col-lg-12 text-center mt-10 mt-10">
           <h3>Jadwal {{$dosen->nama}}</h3>
         </div>
-      </div>
-      <div class="row">
+      </div> -->
+
+
+
+      <!-- <div class="row">
         @foreach($dosen_jadwal as $j_dosen)
         <div class="col-lg-3 col-md-6 mt-20">
           <a href="{{action('JadwalController@edit', $j_dosen->id_jadwal)}}">
             <div class="card-tb">
-
             <div class="card-body">
                 <h4>{{$j_dosen->nama_kelas}}</h4>
                 <span>{{$j_dosen->nama_ruangan}}</span> <br>
@@ -51,6 +76,5 @@
           </a>
         </div>
         @endforeach
-      </div>
-    </div>
+      </div> -->
 @endsection

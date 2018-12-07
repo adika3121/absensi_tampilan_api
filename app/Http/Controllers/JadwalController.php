@@ -106,6 +106,7 @@ class JadwalController extends Controller
                                   'jadwal.mulai as mulai',
                                   'jadwal.selesai as selesai')
                         ->first();
+          $hari = $this->hari;
 
         return view('validasi_absensi_mahasiswa', compact('jadwal_dosen', 'det_jadwal', 'hari'));
     }
