@@ -50,7 +50,22 @@ class OrtuController extends Controller
     }
 
     public function riwayatMahasiswa($id_ortu){
-      
+
+      $riwayat = ortu::where('id_ortu', $id_ortu)
+                  ->join('mahasiswa', 'mahasiswa.ortu_id', '=', 'ortu.id_ortu')
+                  ->join('mahasiswa_kelas', 'mahasiswa.id_mhs', '=', 'mahasiswa_kelas.mahasiswa_id')
+                  ->join('kelas', 'kelas.id_kelas', '=', 'mahasiswa_kelas.kelas_id')
+                  ->join('kehadiran', 'kehadiran.mahasiswa_id', '=', 'mahasiswa.id_mhs')
+                  ->select('ortu.id_ortu',
+                            'mahasiswa.nama as nama_mahasiswa',
+                            'kelas.nama as nama_kelas',
+                            'kehadiran.created_at as waktu_absensi',
+                            'kehadiran.status_valid as Status')
+                  ->get();
+
+      return response()->json([
+        'Riwayat' => $riwayat
+      ]);
 
     }
 
