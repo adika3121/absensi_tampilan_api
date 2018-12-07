@@ -44,9 +44,21 @@ class MahasiswaController extends Controller
      * @param  \App\mahasiswa  $mahasiswa
      * @return \Illuminate\Http\Response
      */
-    public function show(mahasiswa $mahasiswa)
+    public function show($rfid)
     {
-        //
+        $mahasiswa = mahasiswa::where("rfid", $rfid)->first();
+
+        if($mahasiswa){
+            return response()->json([
+                "status" => true,
+                "mahasiswa" => $mahasiswa
+            ], 200);
+        } else {
+            return response()->json([
+                "status" => false,
+                "mahasiswa" => null
+            ], 500);
+        }
     }
 
     /**
