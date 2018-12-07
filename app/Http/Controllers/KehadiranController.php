@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Validator;
 use App\mahasiswa;
 use App\jadwal;
-use Carbon;
+use Carbon\Carbon;
 
 class KehadiranController extends Controller
 {
@@ -51,16 +51,26 @@ class KehadiranController extends Controller
             return response()->json([
             	"status" => false,
             	"pesan" => $validator->errors()->first()
-            ]);
+            ], 500);
         }
 
         $mahasiswa = mahasiswa::with([
             "mahasiswa_kelas"
-        ])->first();
+        ])
+        ->where('rfid', $request->rfid)
+        ->first();
+
+        // return response()->json([
+        //     'status' => false,
+        //     'resp'  => $mahasiswa
+        // ]);
 
         $daftar_jadwal = jadwal::where([
-            "hari" => idate("w", time())
+            "hari" => idate("w", time()),
+            "ruangan_id"    => $request->ruangan_id
         ])
+        ->where('mulai', '<=', date('H:i:s'))
+        ->where('selesai', '>=', date('H:i:s'))
         ->get();
 
         $sudah_absen = false;
@@ -72,15 +82,18 @@ class KehadiranController extends Controller
                 if($mahasiswa_kelas->kelas_id == $jadwal->kelas_id){
                     //mengecek kehadiran mahasiswa
                     $jml_kehadiran = kehadiran::where([
-                        "mahasiswa_id" => $mahasiswa->mahasiswa_id,
-                        "jadwal_id" => $jadwal->jadwal_id,
+                        "mahasiswa_id" => $mahasiswa->id_mhs,
+                        "jadwal_id" => $jadwal->id_jadwal,
                         "status_valid" => 0
                     ])
+                    ->whereDate("created_at", "=", date('Y-m-d'))
                     ->count();
                     if($jml_kehadiran == 0){
                         $kehadiran = new kehadiran;
-                        $kehadiran->mahasiswa_id = $mahasiswa->mahasiswa_id;
-                        $kehadiran->jadwal_id = $jadwal->jadwal_id;
+                        $kehadiran->mahasiswa_id = $mahasiswa->id_mhs;
+                        $kehadiran->jadwal_id = $jadwal->id_jadwal;
+                        $kehadiran->created_at = date('Y-m-d H:i:s');
+                        $kehadiran->updated_at = date('Y-m-d H:i:s');
                         $kehadiran->status_valid = 0;
                         $kehadiran->save();
                         $sudah_absen = true;
@@ -118,7 +131,8 @@ class KehadiranController extends Controller
     public function show($id)
     {
         return kehadiran::with("mahasiswa")
-            ->where("created_at", Carbon::today())
+            ->whereDate("created_at", "=",date('Y-m-d'))
+            ->where('jadwal_id', $id)
             ->orderBy("created_at", "desc")
             ->get();
     }
