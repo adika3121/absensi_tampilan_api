@@ -26,16 +26,13 @@
     <div class="card-tb">
       <h3 class="text-center">{{$det_jadwal->nama_kelas}}</h3>
       <p class="text-center text-muted"> <span class="fa fa-user-circle mr-1"></span>{{$det_jadwal->nama_dosen}}</p>
-<<<<<<< HEAD
-      <h6 class="text-center"><span class="ruangan">{{$det_jadwal->nama_ruangan}}</span>{{$hari [$det_jadwal->hari]}}, {{ date('H:i', strtotime($det_jadwal->mulai)) }} - {{ date('H:i', strtotime($det_jadwal->selesai)) }} </h6>
-=======
       <h6 class="text-center"><span class="ruangan">{{$det_jadwal->nama_ruangan}}</span>{{$hari [$det_jadwal->hari]}}, {{$det_jadwal->mulai}}-{{$det_jadwal->selesai}}</h6>
       <div class="right">
           <select class="" name="myselect" id="exampleFormControlSelect1" onchange="location=this.value">
             @if(isset($pertemuanKe))
               <option value="{{route('jadwal.edit', ['id_jadwal'=>$det_jadwal->id_jadwal])}}">Hari Ini</option>
               @foreach($tgl_jadwal as $tanggal)
-               <option value="{{route('jadwal.edit', ['id_jadwal'=>$det_jadwal->id_jadwal])}}?pertemuanKe={{ date('Y-m-d', strtotime($tanggal->tanggal))}}" {{ ($pertemuanKe == date('Y-m-d', strtotime($tanggal->tanggal))) ? "selected=''" : "" }}>{{ date('d-m-Y', strtotime($tanggal->tanggal))}}</option>
+               <option value="{{route('jadwal.edit', ['id_jadwal'=>$det_jadwal->id_jadwal])}}?pertemuanKe={{ date('Y-m-d', strtotime($tanggal->tanggal))}}" {{ ($pertemuanKe == date('Y-m-d', strtotime($tanggal->tanggal))) ? "selected=''" : ""}}>{{ date('d-m-Y', strtotime($tanggal->tanggal))}}</option>
               @endforeach
             @else
               <option>Hari Ini</option>
@@ -46,11 +43,10 @@
           </select>
       </div>
       <div class="right">
-        <h6 class="">Pertemuan Ke -</h6>
+        <h6 class="">Pertemuan Ke - </h6>
       </div>
->>>>>>> 18de0f54103ec68bf1b140d4afc92b000471b5fc
       <div class="table-responsive">
-        
+
         <form action="{{ route('jadwal.validateClass') }}" method="post">
           <input type="hidden" name="id_jadwal" value="{{ $det_jadwal->id_jadwal }}">
         <table class="table table-bordered table-stripped">
@@ -63,7 +59,7 @@
               @if ($validJadwal->count() == 0)
                 <th style="text-align:center">
                   <input type="checkbox" name="" id="check-all">
-                </th>    
+                </th>
               @endif
             </tr>
           </thead>
@@ -78,21 +74,19 @@
                   @if ($validJadwal->count() == 0)
                     <td style="text-align:center">
                       <input type="checkbox" name="valid[]" value="{{ $j_dsn->id_mhs }}">
-                    </td>    
+                    </td>
                   @endif
                 </tr>
               @endforeach>
           </tbody>
         </table>
         @if ($validJadwal->count() == 0)
-          <button class="btn btn-success pull-right">Valid Kehadiran Mahasiswa</button>    
+          <button class="btn btn-success pull-right">Valid Kehadiran Mahasiswa</button>
         @endif
-        
-        </form
+
+        </form>
       </div>
     </div>
   </div>
 
-  <script>
-  </script>
 @endsection

@@ -55,7 +55,7 @@
 						<a href="#hero">Home</a>
 					</li>
 					<li>
-						<a href="#about">Login</a>
+						<a href="/login/dosen">Login</a>
 					</li>
 				</ul>
 			</nav>

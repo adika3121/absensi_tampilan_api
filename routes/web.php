@@ -15,8 +15,8 @@ Route::get('/absensi', function () {
 });
 
 Route::resource('/jadwal', 'JadwalController');
-Route::post('jadwal/validate', 'JadwalController@validateClass')->name('jadwal.validateClass');
 
+Route::post('jadwal/validate', 'JadwalController@validateClass')->name('jadwal.validateClass');
 
 Route::post('/login/dosen', 'DosenController@login');
 
