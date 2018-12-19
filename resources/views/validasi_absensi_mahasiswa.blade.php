@@ -15,13 +15,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Home
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
-                </li>
+
             </ul>
         </div>
     </div>
@@ -32,7 +26,20 @@
     <div class="card-tb">
       <h3 class="text-center">{{$det_jadwal->nama_kelas}}</h3>
       <p class="text-center text-muted"> <span class="fa fa-user-circle mr-1"></span>{{$det_jadwal->nama_dosen}}</p>
-      <h6 class="text-center"><span class="ruangan">{{$det_jadwal->nama_ruangan}}</span>{{$hari [$det_jadwal->hari]}}, {{$det_jadwal->mulai}}-{{$det_jadwal->selesai}} </h6>
+      <h6 class="text-center"><span class="ruangan">{{$det_jadwal->nama_ruangan}}</span>{{$hari [$det_jadwal->hari]}}, {{$det_jadwal->mulai}}-{{$det_jadwal->selesai}}</h6>
+      <div class="right">
+        <form class="" action="{{action('JadwalController@edit')}}" method="post">
+          <select class="" id="exampleFormControlSelect1">
+            <option>Hari Ini</option>
+            @foreach($tgl_jadwal as $tanggal)
+            <option name="pertemuanKe" class="form-control" type="submit">{{ \Carbon\Carbon::parse($tanggal->tanggal)->format('d/m/Y')}}</option>
+            @endforeach
+          </select>
+        </form>
+      </div>
+      <div class="right">
+        <h6 class="">Pertemuan Ke -</h6>
+      </div>
       <div class="table-responsive">
         <table class="table table-bordered table-stripped">
           <thead>
