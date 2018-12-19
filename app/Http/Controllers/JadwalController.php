@@ -10,7 +10,6 @@ use App\dosen;
 use Faker\Generator;
 use App\mahasiswa;
 use App\kehadiran;
-=======
 use DB;
 use Carbon\Carbon;
 

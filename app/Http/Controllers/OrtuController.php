@@ -22,7 +22,7 @@ class OrtuController extends Controller
     }
 
     public function login(Request $request){
-
+        return $request;
         $usr = $request->username;
         $pass = $request->password;
         $ortu = ortu::where('username', $usr)
