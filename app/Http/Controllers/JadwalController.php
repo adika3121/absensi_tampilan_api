@@ -10,6 +10,9 @@ use App\dosen;
 use Faker\Generator;
 use App\mahasiswa;
 use App\kehadiran;
+=======
+use DB;
+use Carbon\Carbon;
 
 class JadwalController extends Controller
 {
@@ -84,8 +87,20 @@ class JadwalController extends Controller
          7 => 'Minggu'
        ];
 
-    public function edit($id_jadwal)
+    public function edit(Request $request, $id_jadwal)
     {
+      if(isset($request->pertemuanKe)) {
+        $jadwal_dosen = jadwal::where([['id_jadwal', $id_jadwal],[DB::raw('DATE(kehadiran.created_at)'), $request->pertemuanKe]])
+                        ->join('kelas', 'jadwal.kelas_id', '=', 'kelas.id_kelas')
+                        ->join('ruangan', 'jadwal.ruangan_id', '=', 'ruangan.id_ruangan')
+                        ->join('kehadiran', 'jadwal.id_jadwal', '=', 'kehadiran.jadwal_id')
+                        ->join('mahasiswa', 'kehadiran.mahasiswa_id', '=', 'mahasiswa.id_mhs')
+                        ->select( 'mahasiswa.nama as nama_mahasiswa',
+                                  'mahasiswa.nim as nim_mahasiswa',
+                                  'kehadiran.created_at as waktu_absensi',
+                                  'kehadiran.status_valid as status')
+                        ->get();
+      }else{
         $jadwal_dosen = jadwal::where('id_jadwal', $id_jadwal)
                         ->join('kelas', 'jadwal.kelas_id', '=', 'kelas.id_kelas')
                         ->join('ruangan', 'jadwal.ruangan_id', '=', 'ruangan.id_ruangan')
@@ -98,6 +113,9 @@ class JadwalController extends Controller
                                   'kehadiran.created_at as waktu_absensi',
                                   'kehadiran.status_valid as status')
                         ->get();
+      }
+
+
 
         $det_jadwal = jadwal::where('id_jadwal', $id_jadwal)
                     ->join('kelas', 'jadwal.kelas_id', '=', 'kelas.id_kelas')
@@ -120,6 +138,27 @@ class JadwalController extends Controller
         $hari = $this->hari;
 
         return view('validasi_absensi_mahasiswa', compact('validJadwal','jadwal_dosen', 'det_jadwal', 'hari'));
+          $det_jadwal = jadwal::where('id_jadwal', $id_jadwal)
+                        ->join('kelas', 'jadwal.kelas_id', '=', 'kelas.id_kelas')
+                        ->join('dosen', 'kelas.dosen_id', '=', 'dosen.id_dosen')
+                        ->join('ruangan', 'jadwal.ruangan_id', '=', 'ruangan.id_ruangan')
+                        ->select('kelas.nama as nama_kelas',
+                                  'dosen.nama as nama_dosen',
+                                  'ruangan.nama as nama_ruangan',
+                                  'jadwal.hari',
+                                  'jadwal.mulai as mulai',
+                                  'jadwal.selesai as selesai')
+                        ->first();
+
+          $tgl_jadwal = jadwal::where('id_jadwal', $id_jadwal)
+                        ->join('kehadiran', 'jadwal.id_jadwal', '=', 'kehadiran.jadwal_id')
+                        ->select('kehadiran.created_at as tanggal')
+                        ->groupBy(DB::raw('DATE(kehadiran.created_at)'))
+                        ->get();
+
+          $hari = $this->hari;
+
+        return view('validasi_absensi_mahasiswa', compact('jadwal_dosen', 'det_jadwal', 'hari', 'tgl_jadwal'));
     }
 
     /**
