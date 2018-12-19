@@ -28,14 +28,19 @@
       <p class="text-center text-muted"> <span class="fa fa-user-circle mr-1"></span>{{$det_jadwal->nama_dosen}}</p>
       <h6 class="text-center"><span class="ruangan">{{$det_jadwal->nama_ruangan}}</span>{{$hari [$det_jadwal->hari]}}, {{$det_jadwal->mulai}}-{{$det_jadwal->selesai}}</h6>
       <div class="right">
-        <form class="" action="{{action('JadwalController@edit')}}" method="post">
-          <select class="" id="exampleFormControlSelect1">
-            <option>Hari Ini</option>
-            @foreach($tgl_jadwal as $tanggal)
-            <option name="pertemuanKe" class="form-control" type="submit">{{ \Carbon\Carbon::parse($tanggal->tanggal)->format('d/m/Y')}}</option>
-            @endforeach
+          <select class="" name="myselect" id="exampleFormControlSelect1" onchange="location=this.value">
+            @if(isset($pertemuanKe))
+              <option value="{{route('jadwal.edit', ['id_jadwal'=>$det_jadwal->id_jadwal])}}">Hari Ini</option>
+              @foreach($tgl_jadwal as $tanggal)
+               <option value="{{route('jadwal.edit', ['id_jadwal'=>$det_jadwal->id_jadwal])}}?pertemuanKe={{ date('Y-m-d', strtotime($tanggal->tanggal))}}" {{ ($pertemuanKe == date('Y-m-d', strtotime($tanggal->tanggal))) ? "selected=''" : "" }}>{{ date('d-m-Y', strtotime($tanggal->tanggal))}}</option>
+              @endforeach
+            @else
+              <option>Hari Ini</option>
+              @foreach($tgl_jadwal as $tanggal)
+              <option value="{{route('jadwal.edit', ['id_jadwal'=>$det_jadwal->id_jadwal])}}?pertemuanKe={{ date('Y-m-d', strtotime($tanggal->tanggal))}}">{{ date('d-m-Y', strtotime($tanggal->tanggal))}}</option>
+              @endforeach
+            @endif
           </select>
-        </form>
       </div>
       <div class="right">
         <h6 class="">Pertemuan Ke -</h6>

@@ -86,6 +86,8 @@ class JadwalController extends Controller
 
     public function edit(Request $request, $id_jadwal)
     {
+      $pertemuanKe = $request->pertemuanKe;
+      $dateNow = date('Y-m-d');
       if(isset($request->pertemuanKe)) {
         $jadwal_dosen = jadwal::where([['id_jadwal', $id_jadwal],[DB::raw('DATE(kehadiran.created_at)'), $request->pertemuanKe]])
                         ->join('kelas', 'jadwal.kelas_id', '=', 'kelas.id_kelas')
@@ -97,8 +99,12 @@ class JadwalController extends Controller
                                   'kehadiran.created_at as waktu_absensi',
                                   'kehadiran.status_valid as status')
                         ->get();
+
+
+
+
       }else{
-        $jadwal_dosen = jadwal::where('id_jadwal', $id_jadwal)
+        $jadwal_dosen = jadwal::where([['id_jadwal', $id_jadwal],[DB::raw('DATE(kehadiran.created_at)'), $dateNow ]])
                         ->join('kelas', 'jadwal.kelas_id', '=', 'kelas.id_kelas')
                         ->join('ruangan', 'jadwal.ruangan_id', '=', 'ruangan.id_ruangan')
                         ->join('kehadiran', 'jadwal.id_jadwal', '=', 'kehadiran.jadwal_id')
@@ -108,6 +114,7 @@ class JadwalController extends Controller
                                   'kehadiran.created_at as waktu_absensi',
                                   'kehadiran.status_valid as status')
                         ->get();
+
       }
 
 
@@ -117,6 +124,7 @@ class JadwalController extends Controller
                         ->join('dosen', 'kelas.dosen_id', '=', 'dosen.id_dosen')
                         ->join('ruangan', 'jadwal.ruangan_id', '=', 'ruangan.id_ruangan')
                         ->select('kelas.nama as nama_kelas',
+                                  'jadwal.id_jadwal as id_jadwal',
                                   'dosen.nama as nama_dosen',
                                   'ruangan.nama as nama_ruangan',
                                   'jadwal.hari',
@@ -132,7 +140,7 @@ class JadwalController extends Controller
 
           $hari = $this->hari;
 
-        return view('validasi_absensi_mahasiswa', compact('jadwal_dosen', 'det_jadwal', 'hari', 'tgl_jadwal'));
+        return view('validasi_absensi_mahasiswa', compact('jadwal_dosen', 'det_jadwal', 'hari', 'tgl_jadwal', 'pertemuanKe'));
     }
 
     /**
