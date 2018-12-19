@@ -22,7 +22,6 @@ class OrtuController extends Controller
     }
 
     public function login(Request $request){
-        return $request;
         $usr = $request->username;
         $pass = $request->password;
         $ortu = ortu::where('username', $usr)
@@ -33,9 +32,9 @@ class OrtuController extends Controller
         if (Hash::check($pass, $ortu->password)) {
           if ($ortu->token == null) {
             $ortu->token = uniqid();
-            $ortu->fcm = $request->fcm;
-            $ortu->save();
           }
+          $ortu->fcm = $request->fcm;
+          $ortu->save();
 
           return response()->json([
             'status'  => true,
