@@ -22,7 +22,6 @@ class OrtuController extends Controller
     }
 
     public function login(Request $request){
-
         $usr = $request->username;
         $pass = $request->password;
         $ortu = ortu::where('username', $usr)
@@ -33,8 +32,9 @@ class OrtuController extends Controller
         if (Hash::check($pass, $ortu->password)) {
           if ($ortu->token == null) {
             $ortu->token = uniqid();
-            $ortu->save();
           }
+          $ortu->fcm = $request->fcm;
+          $ortu->save();
 
           return response()->json([
             'status'  => true,
@@ -51,20 +51,27 @@ class OrtuController extends Controller
 
     public function riwayatMahasiswa($id_ortu){
 
-      $riwayat = ortu::where('id_ortu', $id_ortu)
+      $riwayat = ortu::where('ortu.token', $id_ortu)
                   ->join('mahasiswa', 'mahasiswa.ortu_id', '=', 'ortu.id_ortu')
                   ->join('mahasiswa_kelas', 'mahasiswa.id_mhs', '=', 'mahasiswa_kelas.mahasiswa_id')
                   ->join('kelas', 'kelas.id_kelas', '=', 'mahasiswa_kelas.kelas_id')
+                  ->join('jadwal', 'jadwal.kelas_id', '=', 'kelas.id_kelas')
+                  ->join('dosen', 'dosen.id_dosen', '=', 'kelas.dosen_id')
                   ->join('kehadiran', 'kehadiran.mahasiswa_id', '=', 'mahasiswa.id_mhs')
                   ->select('ortu.id_ortu',
                             'mahasiswa.nama as nama_mahasiswa',
                             'kelas.nama as nama_kelas',
                             'kehadiran.created_at as waktu_absensi',
-                            'kehadiran.status_valid as Status')
+                            'kehadiran.status_valid as status',
+                            'kehadiran.tgl_valid',
+                            'jadwal.mulai', 'jadwal.selesai', 'dosen.nama as nama_dosen')
+                  ->orderBy('kehadiran.created_at', 'desc')
                   ->get();
 
       return response()->json([
-        'Riwayat' => $riwayat
+        'status'  => true,
+        'msg'     => 'berhasil',
+        'riwayat' => $riwayat
       ]);
 
     }

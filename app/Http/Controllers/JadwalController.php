@@ -8,6 +8,8 @@ use App\ruangan;
 use App\kelas;
 use App\dosen;
 use Faker\Generator;
+use App\mahasiswa;
+use App\kehadiran;
 use DB;
 use Carbon\Carbon;
 
@@ -109,7 +111,9 @@ class JadwalController extends Controller
                         ->join('ruangan', 'jadwal.ruangan_id', '=', 'ruangan.id_ruangan')
                         ->join('kehadiran', 'jadwal.id_jadwal', '=', 'kehadiran.jadwal_id')
                         ->join('mahasiswa', 'kehadiran.mahasiswa_id', '=', 'mahasiswa.id_mhs')
-                        ->select( 'mahasiswa.nama as nama_mahasiswa',
+                        ->whereDate('kehadiran.created_at', date('Y-m-d'))
+                        ->select( 'mahasiswa.id_mhs',
+                                    'mahasiswa.nama as nama_mahasiswa',
                                   'mahasiswa.nim as nim_mahasiswa',
                                   'kehadiran.created_at as waktu_absensi',
                                   'kehadiran.status_valid as status')
@@ -119,6 +123,27 @@ class JadwalController extends Controller
 
 
 
+        $det_jadwal = jadwal::where('id_jadwal', $id_jadwal)
+                    ->join('kelas', 'jadwal.kelas_id', '=', 'kelas.id_kelas')
+                    ->join('dosen', 'kelas.dosen_id', '=', 'dosen.id_dosen')
+                    ->join('ruangan', 'jadwal.ruangan_id', '=', 'ruangan.id_ruangan')
+                    ->select('jadwal.id_jadwal','kelas.nama as nama_kelas',
+                                'dosen.nama as nama_dosen',
+                                'ruangan.nama as nama_ruangan',
+                                'jadwal.hari',
+                                'jadwal.mulai as mulai',
+                                'jadwal.selesai as selesai')
+                    ->first();
+
+        $validJadwal = kehadiran::
+            where('jadwal_id', $id_jadwal)
+            ->whereNotNull('tgl_valid')
+            ->whereDate('tgl_valid', date('Y-m-d'))
+            ->get();
+
+        $hari = $this->hari;
+
+        return view('validasi_absensi_mahasiswa', compact('validJadwal','jadwal_dosen', 'det_jadwal', 'hari'));
           $det_jadwal = jadwal::where('id_jadwal', $id_jadwal)
                         ->join('kelas', 'jadwal.kelas_id', '=', 'kelas.id_kelas')
                         ->join('dosen', 'kelas.dosen_id', '=', 'dosen.id_dosen')
@@ -164,5 +189,65 @@ class JadwalController extends Controller
     public function destroy(jadwal $jadwal)
     {
         //
+    }
+
+    public function validateClass(Request $request){
+        
+        # validating all mhs
+        
+        if($request->has('valid')){
+            foreach($request->valid as $mhsId){
+                kehadiran::where([
+                    'mahasiswa_id'  => $mhsId,
+                    'jadwal_id' => $request->id_jadwal
+                ])
+                ->whereDate('kehadiran.created_at', date('Y-m-d'))
+                ->update(['status_valid' => 1, 'tgl_valid' => date('Y-m-d H:i:s')]);
+    
+                #notif ortunya
+            }
+        }
+        
+
+        $hadir = kehadiran::where('jadwal_id', $request->id_jadwal)
+            ->whereDate('created_at', date('Y-m-d'))
+            ->get()->pluck('mahasiswa_id');
+
+        #copying mhs that absen to this class
+        $absenMhs = mahasiswa::
+            join('mahasiswa_kelas', 'mahasiswa_kelas.mahasiswa_id', '=', 'mahasiswa.id_mhs')
+            ->join('jadwal', 'jadwal.kelas_id', '=', 'mahasiswa_kelas.kelas_id')
+            ->where('jadwal.id_jadwal', $request->id_jadwal)
+            ->whereNotIn('mahasiswa.id_mhs', $hadir)
+            ->get();
+        
+        $bolos = mahasiswa::
+            join('mahasiswa_kelas', 'mahasiswa_kelas.mahasiswa_id', '=', 'mahasiswa.id_mhs')
+            ->join('jadwal', 'jadwal.kelas_id', '=', 'mahasiswa_kelas.kelas_id')
+            ->where('jadwal.id_jadwal', $request->id_jadwal)
+            ->whereNotIn('mahasiswa.id_mhs', $request->valid)
+            ->get();
+        
+        $toJadwal = [];
+        foreach($absenMhs as $mhs){
+            $data = [
+                'mahasiswa_id'  => $mhs->id_mhs,
+                'jadwal_id'     => $request->id_jadwal,
+                'created_at'    => date('Y-m-d H:i:s'),
+                'updated_at'    => date('Y-m-d H:i:s')    
+            ];
+            array_push($toJadwal, $data);
+        }
+
+        if(count($toJadwal) > 0){
+            kehadiran::insert($toJadwal);
+            #notif jika bolos
+        }
+
+        kehadiran::where('jadwal_id', $request->id_jadwal)
+            ->whereDate('created_at', date('Y-m-d'))
+            ->update(['tgl_valid' => date("Y-m-d H:i:s")]);
+
+        return redirect()->back();
     }
 }

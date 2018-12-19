@@ -26,6 +26,9 @@
     <div class="card-tb">
       <h3 class="text-center">{{$det_jadwal->nama_kelas}}</h3>
       <p class="text-center text-muted"> <span class="fa fa-user-circle mr-1"></span>{{$det_jadwal->nama_dosen}}</p>
+<<<<<<< HEAD
+      <h6 class="text-center"><span class="ruangan">{{$det_jadwal->nama_ruangan}}</span>{{$hari [$det_jadwal->hari]}}, {{ date('H:i', strtotime($det_jadwal->mulai)) }} - {{ date('H:i', strtotime($det_jadwal->selesai)) }} </h6>
+=======
       <h6 class="text-center"><span class="ruangan">{{$det_jadwal->nama_ruangan}}</span>{{$hari [$det_jadwal->hari]}}, {{$det_jadwal->mulai}}-{{$det_jadwal->selesai}}</h6>
       <div class="right">
           <select class="" name="myselect" id="exampleFormControlSelect1" onchange="location=this.value">
@@ -45,7 +48,11 @@
       <div class="right">
         <h6 class="">Pertemuan Ke -</h6>
       </div>
+>>>>>>> 18de0f54103ec68bf1b140d4afc92b000471b5fc
       <div class="table-responsive">
+        
+        <form action="{{ route('jadwal.validateClass') }}" method="post">
+          <input type="hidden" name="id_jadwal" value="{{ $det_jadwal->id_jadwal }}">
         <table class="table table-bordered table-stripped">
           <thead>
             <tr>
@@ -53,21 +60,39 @@
               <th>Nama Mahasiswa</th>
               <th>Waktu Absensi</th>
               <th>Status</th>
+              @if ($validJadwal->count() == 0)
+                <th style="text-align:center">
+                  <input type="checkbox" name="" id="check-all">
+                </th>    
+              @endif
             </tr>
           </thead>
           <tbody>
-            @foreach($jadwal_dosen as $j_dsn)
-              <tr>
-                <td>{{$j_dsn->nim_mahasiswa}}</td>
-                <td>{{$j_dsn->nama_mahasiswa}}</td>
-                <td>{{$j_dsn->waktu_absensi}}</td>
-                <td>{{ ($j_dsn->status == 1)? "Valid" : "Tidak Valid" }}</td>
-              </tr>
-            @endforeach
+              @csrf
+              @foreach($jadwal_dosen as $j_dsn)
+                <tr>
+                  <td>{{$j_dsn->nim_mahasiswa}}</td>
+                  <td>{{$j_dsn->nama_mahasiswa}}</td>
+                  <td>{{ date('H:i d/m/Y', strtotime($j_dsn->waktu_absensi)) }}</td>
+                  <td>{{ ($j_dsn->status == 1)? "Valid" : "Tidak Valid" }}</td>
+                  @if ($validJadwal->count() == 0)
+                    <td style="text-align:center">
+                      <input type="checkbox" name="valid[]" value="{{ $j_dsn->id_mhs }}">
+                    </td>    
+                  @endif
+                </tr>
+              @endforeach>
           </tbody>
         </table>
+        @if ($validJadwal->count() == 0)
+          <button class="btn btn-success pull-right">Valid Kehadiran Mahasiswa</button>    
+        @endif
+        
+        </form
       </div>
     </div>
   </div>
 
+  <script>
+  </script>
 @endsection
